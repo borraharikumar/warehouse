@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Warehouse user - Update</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<body class="container container-fluid pt-5 pb-5">
+	
+	<h2 class="text-primary">Warehouse user - Update</h2>
+	<hr>
+	<br>
+	<form th:action="@{/wh/update}" method="post" th:object="${whUser}" id="whUserEditForm">
+		<div class="row">
+			<label for="userType" class="col-3"><strong>ID :</strong></label>
+			<input type="text" class="form-control" th:field="*{id}" readonly>
+			<span class="text-danger" id="userTypeErr"></span>
+		</div>
+		<br>
+		<div class="row">
+			<label for="userType" class="col-3"><strong>User type :</strong></label>
+			<div class="form-check form-check-inline col-2">
+				<input type="radio" class="form-ckeck-input" th:field="*{userType}" value="VENDOR">&nbsp; Vendor
+			</div>
+			<div class="form-check form-check-inline col-2">
+				<input type="radio" class="form-ckeck-input" th:field="*{userType}" value="CUSTOMER">&nbsp; Customer
+			</div>
+			<span class="text-danger" id="userTypeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="userCode"><strong>User code :</strong></label>
+			<input type="text" class="form-control" th:field="*{userCode}">
+			<span class="text-danger" id="userCodeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="userFor"><strong>User for :</strong></label>
+			<input type="text" class="form-control" th:field="*{userFor}" readonly>
+			<span class="text-danger" id="userForErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="userEmail"><strong>User email :</strong></label>
+			<input type="text" class="form-control" th:field="*{userEmail}">
+			<span class="text-danger" id="userEmailErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="userContactErr"><strong>User contact :</strong></label>
+			<input type="text" class="form-control" th:field="*{userContact}">
+			<span class="text-danger" id="userContactErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="userIdType"><strong>User ID type :</strong></label>
+			<select class="form-control" th:field="*{userIdType}">
+				<option value="">== SELECT ==</option>
+				<option value="PAN">Pan card</option>
+				<option value="AADHAR">Aadhar card</option>
+				<option value="VOTER ID">Voter ID</option>
+				<option value="OTHER">OTHER</option>
+			</select>
+			<span class="text-danger" id="userIdTypeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="userIdType"><strong><span class="text-danger">*</span> If other :</strong></label>
+			<input type="text" class="form-control" th:field="*{userIdType}" id="ifOtherInput" disabled="disabled">
+			<span class="text-danger" id="ifOtherInputErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="userIdNumber"><strong>User ID number :</strong></label>
+			<input type="text" class="form-control" th:field="*{userIdNumber}">
+			<span class="text-danger" id="userIdNumberErr"></span>
+		</div>
+		<br>
+		<div>
+			<a class="btn btn-info" th:href="@{/wh/data}">Go to WhUser data</a>
+			<button class="btn btn-warning" type="reset">Reset</button>
+			<button class="btn btn-success" type="submit">Submit</button>
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//1. Hide error sections
+			$("#userTypeErr").hide();
+			$("#userCodeErr").hide();
+			$("#userEmailErr").hide();
+			$("#userContactErr").hide();
+			$("#userIdTypeErr").hide();
+			$("#ifOtherInputErr").hide();
+			$("#userIdNumberErr").hide();
+			
+			//2. Define error variables
+			var userTypeErr = false;
+			var userCodeErr = false;
+			var userEmailErr = false;
+			var userContactErr = false;
+			var userIdTypeErr = false;
+			var ifOtherInputErr = true;
+			var userIdNumberErr = false;
+			
+			//3. Define validate functions
+			//validate userType
+			function validate_userType() {
+				if(!$("input[name='userType']:checked").val()) {
+					$("#userFor").val("");
+					$("#userTypeErr").show();
+					$("#userTypeErr").html("Select <b>User type</b>");
+					userTypeErr = false;
+				} else {
+					var val = $("input[name='userType']:checked").val();
+					if(val === "VENDOR") $("#userFor").val("PURCHASE");
+					else if(val === "CUSTOMER") $("#userFor").val("SALE");
+					$("#userFor").val();
+					$("#userTypeErr").hide();
+					userTypeErr = true;
+				}
+				return userTypeErr;
+			}
+			//Validate userCode
+			function validate_userCode() {
+				var val = $("#userCode").val();
+				var exp = /^[A-Z0-9\s\-]{4,15}$/;
+				if(val == "") {
+					$("#userCodeErr").show();
+					$("#userCodeErr").html("Enter <b>User code</b>");
+					userCodeErr = false;
+				} else if(!exp.test(val)) {
+					$("#userCodeErr").show();
+					$("#userCodeErr").html("<b>User code can contain 4-15 characters only</b>");
+					userCodeErr = false;
+				} else {
+					$("#userCodeErr").hide();
+					userCodeErr = true;
+				}
+				return userCodeErr;
+			}
+			//Validate userEmail
+			function validate_userEmail() {
+				var val = $("#userEmail").val();
+				var exp = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+				if(val == "") {
+					$("#userEmailErr").show();
+					$("#userEmailErr").html("Enter <b>email</b>");
+					userEmailErr = false;
+				} else if(!exp.test(val)) {
+					$("#userEmailErr").show();
+					$("#userEmailErr").html("Enter <b>valid email</b>");
+					userEmailErr = false;
+				} else {
+					$("#userEmailErr").hide();
+					userEmailErr = true;
+				}
+				return userEmailErr;
+			}
+			//Validate userContact
+			function validate_userContact() {
+				var val = $("#userContact").val();
+				var exp = /^[A-Za-z0-9\,\.\-\s]{10,50}$/;
+				if(val=="") {
+					$("#userContactErr").show();
+					$("#userContactErr").html("Enter <b>Contact details</b>");
+					userContactErr = false;
+				} else if(!exp.test(val)) {
+					$("#userContactErr").show();
+					$("#userContactErr").html("Enter <b>valid contact details</b>");
+					userContactErr = false;
+				} else {
+					$("#userContactErr").hide();
+					userContactErr = true;
+				}
+				return userContactErr;
+			}
+			//Validate userIdType
+			function validate_userIdType() {
+				var val = $("#userIdType").val();
+				if(val=="") {
+					$("#userIdTypeErr").show();
+					$("#userIdTypeErr").html("Select <b>ID type</b>");
+					$("#ifOtherInput").prop("disabled", "true");
+					$("#ifOtherInput").val("");
+					$("#ifOtherInput").attr("name", "");
+					$("#userIdType").attr("name", "userIdType");
+					$("#ifOtherInputErr").hide();
+					userIdTypeErr = false;
+				} else {
+					if(val=="OTHER") {
+						$("#ifOtherInput").removeAttr("disabled");
+						$("#ifOtherInput").attr("name", "userIdType");
+						$("#userIdType").attr("name", "");
+					} else {
+						$("#ifOtherInput").prop("disabled", "true");
+						$("#ifOtherInput").attr("name", "");
+						$("#ifOtherInput").val("");
+						$("#userIdType").attr("name", "userIdType");
+						$("#ifOtherInputErr").hide();
+					}
+					$("#userIdTypeErr").hide();
+					userIdTypeErr = true;
+				}
+				return userIdTypeErr;
+			}
+			//Validate ifOtherInput
+			function validate_ifOtherInput() {
+				var val = $("#ifOtherInput").val();
+				var exp = /^[A-Z\s\-]{4,15}$/;
+				if($("#userIdType").val()=="OTHER" && val=="") {
+					$("#ifOtherInputErr").show();
+					$("#ifOtherInputErr").html("Enter <b>User ID type</b>");
+					ifOtherInputErr = false;
+				} else if($("#userIdType").val()=="OTHER" && !exp.test(val)) {
+					$("#ifOtherInputErr").show();
+					$("#ifOtherInputErr").html("Enter <b>valid User ID type</b>");
+					ifOtherInputErr = false;
+				} else {
+					$("#ifOtherInputErr").hide();
+					ifOtherInputErr = true;
+				}
+				return ifOtherInputErr;
+			}
+			//Validate userIdNumber
+			function valiate_userIdNumber() {
+				var type = $("#userIdType").val();
+				var number = $("#userIdNumber").val();
+				var aadhar = /^[0-9]{12}$/;
+				var pan = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+				var voter = /^[A-Z]{3}[0-9]{7}$/;
+				var other = /^[A-Z0-9\s\-]{4,15}$/;
+				if(type=="AADHAR") {
+					if(number=="") {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>Aadhar number</b>");
+						userIdNumberErr = false;
+					} else if(!aadhar.test(number)) {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>valid Aadhar number</b>");
+						userIdNumberErr = false;
+					} else {
+						$("#userIdNumberErr").hide();
+						userIdNumberErr = true;
+					}
+				} else if(type=="PAN") {
+					if(number=="") {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>PAN number</b>");
+						userIdNumberErr = false;
+					} else if(!pan.test(number)) {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>valid PAN number</b>");
+						userIdNumberErr = false;
+					} else {
+						$("#userIdNumberErr").hide();
+						userIdNumberErr = true;
+					}
+				} else if(type=="VOTER ID") {
+					if(number=="") {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>Voter ID</b>");
+						userIdNumberErr = false;
+					} else if(!voter.test(number)) {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>valid Voter ID</b>");
+						userIdNumberErr = false;
+					} else {
+						$("#userIdNumberErr").hide();
+						userIdNumberErr = true;
+					}
+				} else {
+					if(number=="") {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>ID number</b>");
+						userIdNumberErr = false;
+					} else if(!other.test(number)) {
+						$("#userIdNumberErr").show();
+						$("#userIdNumberErr").html("Enter <b>valid ID number</b>");
+						userIdNumberErr = false;
+					} else {
+						$("#userIdNumberErr").hide();
+						userIdNumberErr = true;
+					}
+				}
+				return userIdNumberErr;
+			}
+			
+			//4. Link validate functions with events
+			$("input[name='userType']").change(function(){
+				validate_userType();
+			});
+			$("#userCode").keyup(function(){
+				$("#userCode").val($("#userCode").val().toUpperCase());
+				validate_userCode();
+			});
+			$("#userEmail").keyup(function(){
+				validate_userEmail();
+			});
+			$("#userContact").keyup(function(){
+				validate_userContact();
+			});
+			$("#userIdType").change(function(){
+				validate_userIdType();
+			});
+			$("#ifOtherInput").keyup(function(){
+				$("#ifOtherInput").val($("#ifOtherInput").val().toUpperCase());
+				validate_ifOtherInput();
+			});
+			$("#userIdNumber").keyup(function(){
+				$("#userIdNumber").val($("#userIdNumber").val().toUpperCase());
+				valiate_userIdNumber();
+			})
+			
+			//5. Define onsubmit event
+			$("#whUserEditForm").submit(function(){
+				validate_userType();
+				validate_userCode();
+				validate_userEmail();
+				validate_userContact();
+				validate_userIdType();
+				validate_ifOtherInput();
+				valiate_userIdNumber();
+				if(userTypeErr && userCodeErr && userEmailErr && userContactErr
+						&& userIdTypeErr && ifOtherInputErr && userIdNumberErr) {
+					return true;
+				} else {
+					return false;
+				}
+			});
+		});
+	</script>
+	
+</body>
+</html>

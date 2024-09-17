@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>OrderMethod - Register</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<body class="container container-fluid pt-5 pb-5">
+
+	<h2 class="text-primary">OrderMethod - Register</h2>
+	<hr>
+	<br>
+	<form th:action="@{/order/save}" method="post" th:object="${order}" id="orderRegForm">
+		<div class="row">
+			<label for="orderMode" class="col-3"><strong>Order mode :</strong></label>
+			<div class="col-2">
+				<input type="radio" class="form-check-input" th:field="*{orderMode}" value="SALE"> Sale
+			</div>
+			<div class="col-2">
+				<input type="radio" class="form-check-input" th:field="*{orderMode}" value="PURCHASE"> Purchase
+			</div>
+		</div>
+		<span class="text-danger" id="orderModeErr"></span>
+		<br>
+		<div>
+			<label for="orderCode"><strong>Order code :</strong></label>
+			<input type="text" class="form-control" th:field="*{orderCode}">
+			<span class="text-danger" id="orderCodeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="orderType"><strong>Order type :</strong></label>
+			<select class="form-control" th:field="*{orderType}">
+				<option value="">== SELECT ==</option>
+				<option value="FIFO">FIFO</option>
+				<option value="LIFO">LIFO</option>
+				<option value="FCFO">FCFO</option>
+				<option value="FEFO">FEFO</option>
+			</select>
+			<span class="text-danger" id="orderTypeErr"></span>
+		</div>
+		<br>
+		<div class="row">
+			<label for="orderAccept" class="col-3"><strong>Order accept :</strong></label>
+			<div class="col-2">
+				<input type="checkbox" class="form-check-input" th:field="*{orderAccept}" value="Multi-Model"> Multi-Model
+			</div>
+			<div class="col-2">
+				<input type="checkbox" class="form-check-input" th:field="*{orderAccept}" value="Accept return"> Accept return
+			</div><br>
+		</div>
+		<span class="text-danger" id="orderAcceptErr"></span>
+		<br>
+		<div>
+			<label for="description"><strong>Description :</strong></label>
+			<textarea class="form-control" th:field="*{description}"></textarea>
+			<span class="text-danger" id="descriptionErr"></span>
+		</div>
+		<br>
+		<div>
+			<a class="btn btn-info" th:href="@{/order/data}">Go to order data</a>
+			<button type="reset" class="btn btn-warning">Reset</button>
+			<button type="submit" class="btn btn-success">Submit</button>
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			//1. Hide error section
+			$("#orderModeErr").hide();
+			$("#orderCodeErr").hide();
+			$("#orderTypeErr").hide();
+			$("#orderAcceptErr").hide();
+			$("#descriptionErr").hide();
+			
+			//2. Define error variable
+			var orderModeErr  = false;
+			var orderCodeErr  = false;
+			var orderTypeErr  = false;
+			var orderAcceptErr  = false;
+			var descriptionErr  = false;
+			
+			//3. Define validation functions
+			function validate_orderMode() {
+				if(!$("input[name='orderMode']:checked").val()) {
+					$("#orderModeErr").show();
+					$("#orderModeErr").html("Select <b>Order mode</b><br>");
+					orderModeErr = false;
+				} else {
+					$("#orderModeErr").hide();
+					orderModeErr = true;
+				}
+				return orderModeErr;
+			}
+			function validate_orderCode() {
+				var val = $("#orderCode").val();
+				var exp = /^[A-Z\-\s]{4,15}$/;
+				if(val=="") {
+					$("#orderCodeErr").show();
+					$("#orderCodeErr").html("Enter <b>Order code</b>");
+					orderCodeErr = false;
+				} else if(!exp.test(val)) {
+					$("#orderCodeErr").show();
+					$("#orderCodeErr").html("Enter <b>valid Order code(4-15 characters)</b>");
+					orderCodeErr = false;
+				} else {
+					$.ajax({
+						url : "validateOrderCode",
+						data : {"orderCode" : val},
+						success:function(resText) {
+							if(resText=="") {
+								$("#orderCodeErr").hide();
+								orderCodeErr = true;
+							} else {
+								$("#orderCodeErr").show();
+								$("#orderCodeErr").html(resText);
+								orderCodeErr = false;
+							}
+						}
+					});
+				}
+				return orderCodeErr;
+			}
+			function validate_orderType() {
+				var val = $("#orderType").val();
+				if(val=="") {
+					$("#orderTypeErr").show();
+					$("#orderTypeErr").html("Select <b>Order type</b>");
+					orderTypeErr = false;
+				} else {
+					$("#orderTypeErr").hide();
+					orderTypeErr = true;
+				}
+				return orderTypeErr;
+			}
+			function validate_orderAccept() {
+				var len = $("input[name='orderAccept']:checked").length;
+				if(len === 0) {
+					$("#orderAcceptErr").show();
+					$("#orderAcceptErr").html("Select <b>Order accept</b><br>");
+					orderAcceptErr = false;
+				} else {
+					$("#orderAcceptErr").hide();
+					orderAcceptErr = true;
+				}
+				return orderAcceptErr;
+			}
+			function validate_description() {
+				var val = $("#description").val();
+				var exp = /^[A-Za-z0-9\s\-\,\.]{5,100}$/;
+				if(val == "") {
+					$("#descriptionErr").show();
+					$("#descriptionErr").html("Enter <b>Description</b>");
+					descriptionErr = false;
+				} else if(!exp.test(val)) {
+					$("#descriptionErr").show();
+					$("#descriptionErr").html("Enter <b>valid description(4-100 characters)</b>");
+					descriptionErr = false;
+				} else {
+					$("#descriptionErr").hide();
+					descriptionErr = true;
+				}
+				return descriptionErr;
+			}
+			//4. Link validation functions with events
+			$("input[name='orderMode']").change(function(){
+				validate_orderMode();
+			});
+			$("#orderCode").keyup(function(){
+				$("#orderCode").val($("#orderCode").val().toUpperCase());
+				validate_orderCode();
+			});
+			$("#orderType").change(function(){
+				validate_orderType();
+			});
+			$("input[name='orderAccept']:checked").change(function(){
+				validate_orderAccept();
+			});
+			$("#description").keyup(function(){
+				validate_description();
+			});
+			//5. Define submit event function
+			$("#orderRegForm").submit(function(){
+				validate_orderMode();
+				validate_orderCode();
+				validate_orderType();
+				validate_orderAccept();
+				validate_description();
+				if(orderModeErr && orderCodeErr && orderTypeErr && orderAcceptErr && descriptionErr) return true;
+				else return false;
+			});
+		});
+	</script>
+</body>
+</html>

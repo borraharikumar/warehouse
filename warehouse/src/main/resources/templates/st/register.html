@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Shipment - Register</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<body class="container cntainer-fluid pt-5">
+
+	<h2 class="text-primary">Register Shipment</h2>
+	<hr>
+	<br>
+	<form th:action="@{/st/save}" method="post" th:object="${st}" id="stRegForm">
+		<div>
+			<label for="shipmentMode"><strong>Shipment mode :</strong></label>
+			<select class="form-control" th:field="*{shipmentMode}">
+				<option value="">== SELECT ==</option>
+				<option value="AIR">AIR</option>
+				<option value="TRUCK">TRUCK</option>
+				<option value="SHIP">SHIP</option>
+				<option value="TRAIN">TRAIN</option>
+			</select>
+			<span id="shipmentModeErr" class="text-danger"></span>
+		</div>
+		<br>
+		<div>
+			<label for="shipmentCode"><strong>Shipment code :</strong></label>
+			<input type="text" class="form-control" th:field="*{shipmentCode}">
+			<span id="shipmentCodeErr" class="text-danger"></span>
+		</div>
+		<br>
+		<div class="row">
+			<label for="enableShipment" class="col-3"><strong>Enable shipment :</strong></label>
+			<div class="form-check form-check-inline col-1">
+				<input type="radio" class="form-check-input" th:field="*{enableShipment}" value="YES"> Yes
+			</div>
+			<div class="form-check form-check-inline col-1">
+				<input type="radio" class="form-check-input" th:field="*{enableShipment}" value="NO"> No
+			</div>
+			<span id="enableShipmentErr" class="text-danger"></span>
+		</div>
+		<br>
+		<div class="row">
+			<label for="shipmentGrade" class="col-3"><strong>Shipment grade :</strong></label>
+			<div class="form-check form-check-inline col-1">
+				<input type="radio" class="form-check-input" th:field="*{shipmentGrade}" value="A"> A
+			</div>
+			<div class="form-check form-check-inline col-1">
+				<input type="radio" class="form-check-input" th:field="*{shipmentGrade}" value="B"> B
+			</div>
+			<div class="form-check form-check-inline col-1">
+				<input type="radio" class="form-check-input" th:field="*{shipmentGrade}" value="C"> C
+			</div>
+			<span id="shipmentGradeErr" class="text-danger"></span>
+		</div>
+		<br>
+		<div>
+			<label for="description"><strong>Description :</strong></label>
+			<textarea class="form-control" th:field="*{description}"></textarea>
+			<span id="descriptionErr" class="text-danger"></span>
+		</div>
+		<br>
+		<div>
+			<a class="btn btn-info" th:href="@{/st/data}">Go to Shipment data</a>
+			<button type="reset" class="btn btn-warning">Reset</button>
+			<button type="submit" class="btn btn-success">Submit</button>
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			//1. Hide error componnts
+			$("#shipmentModeErr").hide();
+			$("#shipmentCodeErr").hide();
+			$("#enableShipmentErr").hide();
+			$("#shipmentGradeErr").hide();
+			$("#descriptionErr").hide();
+			
+			//2. Define error flag
+			var shipmentModeErr = false;
+			var shipmentCodeErr = false;
+			var enableShipmentErr = false;
+			var shipmentGradeErr = false;
+			var descriptionErr = false;
+			
+			//3. Define validate functions
+			//Validating shipment mode
+			function validate_shipmentMode() {
+				var val = $("#shipmentMode").val();
+				if(val == "") {
+					$("#shipmentModeErr").show();
+					$("#shipmentModeErr").html("Select <b>Shipment Mode</b>");
+					shipmentModeErr = false;
+				} else {
+					$("#shipmentModeErr").hide();
+					shipmentModeErr = true;
+				}
+				return shipmentModeErr;
+			}
+			//Validating shipment code
+			function validate_shipmentCode() {
+				var val = $("#shipmentCode").val();
+				var exp = /^[A-Z\-\s]{4,15}$/;
+				if(val == "") {
+					$("#shipmentCodeErr").show();
+					$("#shipmentCodeErr").html("Enter <b>Shipment code</b>");
+					shipmentCodeErr = false;
+				} else if(!exp.test(val)) {
+					$("#shipmentCodeErr").show();
+					$("#shipmentCodeErr").html("<b>Shipment code can contain 4-15 characters only</b>");
+					shipmentCodeErr = false;
+				} else {
+					$.ajax({
+						url : "validateShipmentCode",
+						data : {"shipmentCode" : val},
+						success:function(resText) {
+							if(resText=="") {
+								$("#shipmentCodeErr").hide();
+								shipmentCodeErr = true;
+							} else {
+								$("#shipmentCodeErr").show();
+								$("#shipmentCodeErr").html(resText);
+								shipmentCodeErr = false;
+							}
+						}
+					});
+				}
+				return shipmentCodeErr;
+			}
+			//Validating enable shipment
+			function validate_enableShipment() {
+				if(!$("input[name='enableShipment']:checked").val()) {
+					$("#enableShipmentErr").show();
+					$("#enableShipmentErr").html("Select <b>Enable shipment or not</b>");
+					enableShipmentErr = false;
+				} else {
+					$("#enableShipmentErr").hide();
+					enableShipmentErr = true;
+				}
+			}
+			//Validating shipment grade
+			function validate_shipmentGrade() {
+				if(!$("input[name='shipmentGrade']:checked").val()) {
+					$("#shipmentGradeErr").show();
+					$("#shipmentGradeErr").html("Select <b>Shipment grade</b>");
+					shipmentGradeErr = false;
+				} else {
+					$("#shipmentGradeErr").hide();
+					shipmentGradeErr = true;
+				}
+			}
+			//Validating description
+			function validate_description() {
+				var val = $("#description").val();
+				var exp = /^[A-Za-z0-9\,\.\s\-]{10,100}$/;
+				if(val == "") {
+					$("#descriptionErr").show();
+					$("#descriptionErr").html("Enter <b>description</b>");
+					descriptionErr = false;
+				} else if(!exp.test(val)) {
+					$("#descriptionErr").show();
+					$("#descriptionErr").html("<b>Description can contain 10-100 characters only</b>");
+					descriptionErr = false;
+				} else {
+					$("#descriptionErr").hide();
+					descriptionErr = true;
+				}
+				return descriptionErr;
+			}
+			//4. Link validate functions with events
+			$("#shipmentMode").change(function(){
+				validate_shipmentMode();
+			});
+			$("#shipmentCode").keyup(function(){
+				$("#shipmentCode").val($("#shipmentCode").val().toUpperCase());
+				validate_shipmentCode();
+			});
+			 $("#description").keyup(function(){
+				validate_description();
+			});
+			 $("input[name='enableShipment']").change(function(){
+				 validate_enableShipment();
+			 });
+			 $("input[name='shipmentGrade']").change(function(){
+				 validate_shipmentGrade();
+			 });
+			
+			//5. Submit events
+			$("#stRegForm").submit(function(){
+				validate_shipmentMode();
+				validate_shipmentCode();
+				validate_enableShipment();
+				validate_shipmentGrade();
+				validate_description();
+				if(shipmentModeErr && shipmentCodeErr && enableShipmentErr && shipmentGradeErr && descriptionErr) {
+					return true;
+				} else {
+					return false;
+				}
+			});
+		});
+	</script>
+</body>
+</html>

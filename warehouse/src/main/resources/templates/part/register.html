@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Part - Register</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<body class="container container-fluid pt-3 pb-3">
+
+	<h2 class="text-primary">Part - Register</h2>
+	<hr>
+	<form th:action="@{/part/save}" method="post" th:object="${part}" id="partRegForm">
+		<div>
+			<label for="partCode"><strong>Part code :</strong></label>
+			<input type="text" class="form-control" th:field="*{partCode}">
+			<span class="text-danger" id="partCodeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label><strong>Part dimensions(in cm) :</strong></label>
+			<div class="row">
+				<div class="col row">
+					<label class="col" for="partLength">Length :</label>
+					<input type="number" class="form-control col-9" th:field="*{partLength}">
+					<span class="text-danger" id="partLengthErr"></span>
+				</div>
+				<div class="col row">
+					<label class="col" for="partWidth">Width :</label>
+					<input type="number" class="form-control col-9" th:field="*{partWidth}">
+					<span class="text-danger" id="partWidthErr"></span>
+				</div>
+				<div class="col row">
+					<label class="col" for="partHeight">Height :</label>
+					<input type="number" class="form-control col-9" th:field="*{partHeight}">
+					<span class="text-danger" id="partHeightErr"></span>
+				</div>
+			</div>
+		</div>
+		<br>
+		<div>
+			<label for="partBasePrice"><strong>Base price :</strong></label>
+			<input type="number" class="form-control" th:field="*{partBasePrice}">
+			<span class="text-danger" id="partBasePriceErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="partBaseCurrency"><strong>Base currency :</strong></label>
+			<select class="form-control" th:field="*{partBaseCurrency}">
+				<option value="">== SELECT ==</option>
+				<option value="INR">INR</option>
+				<option value="USD">USD</option>
+				<option value="AUS">AUS</option>
+				<option value="ERU">ERU</option>
+			</select>
+			<span class="text-danger" id="partBaseCurrencyErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="uom"><strong>Uom :</strong></label>
+			<select class="form-control" th:field="*{uom}">
+				<option value="">== SELECT ==</option>
+				<option th:each="uom : ${uoms}" th:value="${uom.key}" th:text="${uom.value}"></option>
+			</select>
+			<span class="text-danger" id="uomErr"></span>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col">
+				<label for="omSale"><strong>Order method(Sale) :</strong></label>
+				<select class="form-control" th:field="*{omSale}">
+					<option value="">== SELECT ==</option>
+					<option th:each="om : ${omSales}" th:value="${om.key}" th:text="${om.value}"></option>
+				</select>
+				<span class="text-danger" id="omSaleErr"></span>
+			</div>
+			<div class="col">
+				<label for="omPurchase"><strong>Order method(Purchase) :</strong></label>
+				<select class="form-control" th:field="*{omPurchase}">
+					<option value="">== SELECT ==</option>
+					<option th:each="om : ${omPurchases}" th:value="${om.key}" th:text="${om.value}"></option>
+				</select>
+				<span class="text-danger" id="omPurchaseErr"></span>
+			</div>
+		</div>
+		<br>
+		<div>
+			<label for="description"><strong>Base price :</strong></label>
+			<input type="text" class="form-control" th:field="*{description}">
+			<span class="text-danger" id="descriptionErr"></span>
+		</div>
+		<br>
+		<div>
+			<a class="btn btn-info" th:href="@{/part/data}">Go to Part data</a>
+			<button class="btn btn-warning" type="reset">Reset</button>
+			<button class="btn btn-success" type="submit">Submit</button>
+		</div>
+	</form>
+	<script type="text/javascript">
+	
+	$(document).ready(function() {
+		//1. Hide error section
+		$("#partCodeErr").hide();
+		$("#partLengthErr").hide();
+		$("#partWidthErr").hide();
+		$("#partHeightErr").hide();
+		$("#partBasePriceErr").hide();
+		$("#partBaseCurrencyErr").hide();
+		$("#uomErr").hide();
+		$("#omSaleErr").hide();
+		$("#omPurchaseErr").hide();
+		
+		//2. Define Error flag
+		var partCodeErr  = false;
+		var partLengthErr  = false;
+		var partWidthErr  = false;
+		var partHeightErr  = false;
+		var partBasePriceErr  = false;
+		var partBaseCurrencyErr  = false;
+		var uomErr  = false;
+		var omSaleErr  = false;
+		var omPurchaseErr  = false;
+		
+		//3. Define validate function
+		function validate_partCode() {
+			var val = $("#partCode").val();
+			var exp = /^[A-Z0-9\s\-\_]{4,15}$/;
+			if(val=="") {
+				$("#partCodeErr").show();
+				$("#partCodeErr").html("Enter <b>Part code</b>");
+				partCodeErr  = false;
+			} else if(!exp.test(val)) {
+				$("#partCodeErr").show();
+				$("#partCodeErr").html("Enter <b>valid Part code(4-15 characters)</b>");
+				partCodeErr  = false;
+			} else {
+				$("#partCodeErr").hide();
+				partCodeErr  = true;
+			}
+		}
+		function validate_partLength() {
+			var val = $("#partLength").val();
+			if(val=="") {
+				$("#partLengthErr").show();
+				$("#partLengthErr").html("Enter <b>Part length</b>");
+				partLengthErr  = false;
+			} else {
+				$("#partLengthErr").hide();
+				partLengthErr  = true;
+			}
+		}
+		function validate_partWidth() {
+			var val = $("#partWidth").val();
+			if(val=="") {
+				$("#partWidthErr").show();
+				$("#partWidthErr").html("Enter <b>Part width</b>");
+				partWidthErr  = false;
+			} else {
+				$("#partWidthErr").hide();
+				partWidthErr  = true;
+			}
+		}
+		function validate_partHeight() {
+			var val = $("#partHeight").val();
+			if(val=="") {
+				$("#partHeightErr").show();
+				$("#partHeightErr").html("Enter <b>Part height</b>");
+				partHeightErr  = false;
+			} else {
+				$("#partHeightErr").hide();
+				partHeightErr  = true;
+			}
+		}
+		function validate_partBasePrice() {
+			var val = $("#partBasePrice").val();
+			if(val=="") {
+				$("#partBasePriceErr").show();
+				$("#partBasePriceErr").html("Enter <b>Part base price</b>");
+				partBasePriceErr  = false;
+			} else {
+				$("#partBasePriceErr").hide();
+				partBasePriceErr  = true;
+			}
+		}
+		function validate_partBaseCurrency() {
+			var val = $("#partBaseCurrency").val();
+			if(val=="") {
+				$("#partBaseCurrencyErr").show();
+				$("#partBaseCurrencyErr").html("Enter <b>Part base currency</b>");
+				partBaseCurrencyErr  = false;
+			} else {
+				$("#partBaseCurrencyErr").hide();
+				partBaseCurrencyErr  = true;
+			}
+		}
+		function validate_uom() {
+			var val = $("#uom").val();
+			if(val=="") {
+				$("#uomErr").show();
+				$("#uomErr").html("Enter <b>UOM model</b>");
+				uomErr  = false;
+			} else {
+				$("#uomErr").hide();
+				uomErr  = true;
+			}
+		}
+		function validate_omSale() {
+			var val = $("#omSale").val();
+			if(val=="") {
+				$("#omSaleErr").show();
+				$("#omSaleErr").html("Enter <b>Sale order code</b>");
+				omSaleErr  = false;
+			} else {
+				$("#omSaleErr").hide();
+				omSaleErr  = true;
+			}
+		}
+		function validate_omPurchase() {
+			var val = $("#omPurchase").val();
+			if(val=="") {
+				$("#omPurchaseErr").show();
+				$("#omPurchaseErr").html("Enter <b>Purchase order code</b>");
+				omPurchaseErr  = false;
+			} else {
+				$("#omPurchaseErr").hide();
+				omPurchaseErr  = true;
+			}
+		}
+
+		//4. Link validate function with event
+		$("#partCode").keyup(function(){
+			$("#partCode").val($("#partCode").val().toUpperCase());
+			validate_partCode();
+		});
+		$("#partLength").keyup(function(){
+			validate_partLength();
+		});
+		$("#partWidth").keyup(function(){
+			validate_partWidth();
+		});
+		$("#partHeight").keyup(function(){
+			validate_partHeight();
+		});
+		$("#partBasePrice").keyup(function(){
+			validate_partBasePrice();
+		});
+		$("#partBaseCurrency").change(function(){
+			validate_partBaseCurrency();
+		});
+		$("#uom").change(function(){
+			validate_uom();
+		});
+		$("#omSale").change(function(){
+			validate_omSale();
+		});
+		$("#omPurchase").change(function(){
+			validate_omPurchase();
+		});
+		
+		//5. On submit function
+		$("#partRegForm").submit(function() {
+			validate_partCode();
+			validate_partLength();
+			validate_partWidth();
+			validate_partHeight();
+			validate_partBasePrice();
+			validate_partBaseCurrency();
+			validate_uom();
+			validate_omSale();
+			validate_omPurchase();
+			if(partCodeErr && partLengthErr && partWidthErr && partHeightErr && partBasePriceErr
+					&& partBaseCurrencyErr && uomErr && omSaleErr && omPurchaseErr) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+		
+	});
+	</script>
+</body>
+</html>

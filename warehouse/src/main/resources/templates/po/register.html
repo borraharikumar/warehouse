@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Purchase Order - Register</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<body class="container container-fluid pt-3 pb-3">
+
+	<h2 class="text-primary">Purchase Order - Register</h2>
+	<hr>
+	<form th:action="@{/po/save}" method="post" th:object="${po}" id="poRegForm">
+		<div>
+			<label for="orderCode"><strong>Order code :</strong></label>
+			<input type="text" class="form-control" th:field="*{orderCode}">
+			<span class="text-danger" id="orderCodeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="shipmentType"><strong>Shipment mode :</strong></label>
+			<select class="form-control" th:field="*{shipmentType}">
+				<option value="">== SELECT ==</option>
+				<option th:each="st : ${st}" th:value="${st.key}" th:text="${st.value}"></option>
+			</select>
+			<span class="text-danger" id="shipmentTypeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="whUserType"><strong>Vendor :</strong></label>
+			<select class="form-control" th:field="*{whUserType}">
+				<option value="">== SELECT ==</option>
+				<option th:each="wut : ${wut}" th:value="${wut.key}" th:text="${wut.value}"></option>
+			</select>
+			<span class="text-danger" id="whUserTypeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="refNumber"><strong>Reference number :</strong></label>
+			<input type="text" class="form-control" th:field="*{refNumber}">
+			<span class="text-danger" id="refNumberErr"></span>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col">
+				<label for="qltyCheck"><strong>Quality check :</strong></label>
+			</div>
+			<div class="col">
+				<input type="radio" class="form-check-input" th:field="*{qltyCheck}" value="Required">
+				<span class=""> Required </span>
+			</div>
+			<div class="col">
+				<input type="radio" class="form-check-input" th:field="*{qltyCheck}" value="Not Required">
+				<span class=""> Not Required </span>
+			</div>
+			<span class="text-danger" id="qltyCheckErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="status"><strong>Default status :</strong></label>
+			<input type="text" class="form-control" th:field="*{status}" readonly>
+			<span class="text-danger" id="statusErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="description"><strong>Description</strong></label>
+			<textarea class="form-control" th:field="*{description}"></textarea>
+			<span class="text-danger" id="descriptionErr"></span>
+		</div>
+		<br>
+		<div>
+			<a class="btn btn-info" th:href="@{/po/data}">Go to Purchase Order data</a>
+			<button class="btn btn-warning" type="reset">Reset</button>
+			<button class="btn btn-success" type="submit">Submit</button>
+		</div>
+	</form>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		
+		//1. Hide error component
+		$("#orderCodeErr").hide();
+		$("#shipmentTypeErr").hide();
+		$("#whUserTypeErr").hide();
+		$("#refNumberErr").hide();
+		$("#qltyCheckErr").hide();
+		
+		//2. Define error flag
+		var orderCodeErr = false;
+		var shipmentTypeErr = false;
+		var whUserTypeErr = false;
+		var refNumberErr = false;
+		var qltyCheckErr = false;
+		
+		//3. Define validate function
+		function validate_orderCode() {
+			var val = $("#orderCode").val();
+			var exp =/^[A-Z0-9\s\-\_]{4,15}$/;
+			if(val=="") {
+				$("#orderCodeErr").show();
+				$("#orderCodeErr").html("Enter <b>Order code</b>");
+				orderCodeErr = false;
+			} else if(!exp.test(val)) {
+				$("#orderCodeErr").show();
+				$("#orderCodeErr").html("Enter <b>valid Order code(4-15 characters)</b>");
+				orderCodeErr = false;
+			} else {
+				$("#orderCodeErr").hide();
+				orderCodeErr = true;
+			}
+		}
+		function validate_shipmentType() {
+			var val = $("#shipmentType").val();
+			if(val=="") {
+				$("#shipmentTypeErr").show();
+				$("#shipmentTypeErr").html("Select <b>Shipment code</b>");
+				shipmentTypeErr = false;
+			} else {
+				$("#shipmentTypeErr").hide();
+				shipmentTypeErr = true;
+			}
+		}
+		function validate_whUserType() {
+			var val = $("#whUserType").val();
+			if(val=="") {
+				$("#whUserTypeErr").show();
+				$("#whUserTypeErr").html("Select <b>User code</b>");
+				shipmentTypeErr = false;
+			} else {
+				$("#whUserTypeErr").hide();
+				whUserTypeErr = true;
+			}
+		}
+		function validate_refNumber() {
+			
+		}
+		function validate_qltyCheck() {
+			
+		}
+		
+		//4. Link validate function with event
+		$("#orderCode").keyup(function(){
+			$("#orderCode").val($("#orderCode").val().toUpperCase());
+			validate_orderCode();
+		});
+		$("#shipmentType").change(function(){
+			validate_shipmentType();
+		});
+		$("#whUserType").change(function(){
+			validate_whUserType();
+		});
+		$("#refNumber").keyup(function(){
+			validate_refNumber();
+		});
+		$("#qltyCheck").change(function(){
+			validate_qltyCheck();
+		});
+		
+		//5. On submit function
+		$("#poRegForm").submit(function(){
+			validate_orderCode();
+			validate_shipmentType();
+			validate_whUserType();
+			validate_refNumber();
+			validate_qltyCheck();
+			if(orderCodeErr && shipmentTypeErr && whUserTypeErr && refNumberErr && qltyCheckErr){
+				return true;
+			} else {
+				return false;
+			}
+		});
+		
+	});
+	</script>
+</body>
+</html>

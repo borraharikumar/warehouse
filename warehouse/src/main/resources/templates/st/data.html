@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Shipment - Data</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<script type="text/javascript">
+	function confirmDelete(id) {
+		return confirm("Are you sure to delete shipment with id '" + id + "' ?");
+	}
+</script>
+<body class="container container-fluid pt-5">
+
+	<h2 class="text-primary">Shipment data</h2>
+	<hr>
+	<div class="alert alert-success" th:if="${message ne null}">
+		<strong th:text="${message}"></strong>
+	</div>
+	<a class="btn btn-success btn-small" th:href="@{/st/register}">Add Shipment</a>
+	<a class="btn btn-info btn-small" th:if="${stData}" th:href="@{/st/pdf}">Export to Pdf</a>
+	<a class="btn btn-info btn-small" th:if="${stData}" th:href="@{/st/excel}">Export to Excel</a>
+	<a class="btn btn-info btn-small" th:if="${stData}" th:href="@{/st/charts}">Chart view</a>
+	<br>
+	<div th:if="${stData ne null}">
+		<table class="table table-hover">
+			<thead class="bg-secondary text-white">
+				<tr>
+					<th>SL. NO.</th>
+					<th>ID</th>
+					<th>MODE</th>
+					<th>CODE</th>
+					<th>ENABLED</th>
+					<th>GRADE</th>
+					<th>DESCRIPTION</th>
+					<th>ACTIONS</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="st, sv : ${stData}">
+					<td th:text="${sv.count}"></td>
+					<td th:text="${st.id}"></td>
+					<td th:text="${st.shipmentMode}"></td>
+					<td th:text="${st.shipmentCode}"></td>
+					<td th:text="${st.enableShipment}"></td>
+					<td th:text="${st.shipmentGrade}"></td>
+					<td th:text="${st.description}"></td>
+					<td>
+						<a class="btn btn-warning btn-sm" th:href="@{/st/edit?id={id}(id=${st.id})}">Edit</a> 
+						<a class="btn btn-danger btn-sm" th:href="@{/st/delete?id={id}(id=${st.id})}"
+							th:data-value="${st.id}"
+							th:onclick="return confirmDelete(this.getAttribute('data-value'))">Delete
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div th:unless="${stData ne null}" class="alert alert-info">
+		<strong>No shipment data available...!</strong>
+	</div>
+	
+</body>
+</html>

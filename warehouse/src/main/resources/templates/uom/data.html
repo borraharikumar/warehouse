@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>UOM - Data</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>  
+</head>
+
+<script type="text/javascript">
+	function deleteConfirm(uomId) {
+		return confirm("Are you sure to delete uom with id "+ uomId +"?");
+	}
+</script>
+
+<body class="container container-fluid pt-5">
+
+	<h2 class="text-primary">UOM Data</h2>
+	<hr>
+	<div class="alert alert-success" th:if="${message ne null}">
+		<strong th:text="${message}"></strong>
+	</div>
+	
+	<div>
+		<a class="btn btn-small btn-success" th:href="@{/uom/register}">Add UOM</a>
+		<a class="btn btn-small btn-info" th:if="${uomData ne null}" th:href="@{/uom/pdf}">Export to PDF</a>
+		<a class="btn btn-small btn-info" th:if="${uomData ne null}" th:href="@{/uom/excel}">Export to Excel</a>
+		<a class="btn btn-small btn-info" th:if="${uomData ne null}" th:href="@{/uom/charts}">Chart view</a>
+	</div>
+	<div th:if="${uomData} != null">
+		<table class="table table-hover">
+			<thead class="bg-secondary text-white">
+				<tr>
+					<th>Sl. no.</th>
+					<th>UOM Id</th>
+					<th>UOM Type</th>
+					<th>UOM Model</th>
+					<th>Description</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="uom, sv : ${uomData}">
+					<td th:text="${sv.count}"></td>
+					<td th:text="${uom.id}"></td>
+					<td th:text="${uom.uomType}"></td>
+					<td th:text="${uom.uomModel}"></td>
+					<td th:text="${uom.description}"></td>
+					<td>
+						<a th:href="@{/uom/edit?id={id}(id=${uom.id})}" class="btn btn-sm btn-warning">Edit</a>
+						<a th:href="@{/uom/delete?id={id}(id=${uom.id})}"
+							class="btn btn-sm btn-danger"
+							th:data-value="${uom.id}"
+							th:onclick="return deleteConfirm(this.getAttribute('data-value'))">
+							Delete
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="alert alert-info" th:unless="${uomData} != null">
+		<strong>No UOM data found...!</strong>
+	</div>
+	
+</body>
+</html>

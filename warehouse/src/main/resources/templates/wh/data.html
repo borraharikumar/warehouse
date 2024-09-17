@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Warehouse user - Data</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<script type="text/javascript">
+	function confirmDelete(id) {
+		return confirm("Are you sure to delete user with id '" + id + "' ?");
+	}
+</script>
+<body class="container container-fluid pt-5 pb-5">
+
+	<h2 class="text-primary">Warehouse user - Data</h2>
+	<hr>
+	<div class="alert alert-success" th:if="${message ne null}">
+		<strong th:text=${message}></strong>
+	</div>
+	<a class="btn btn-small btn-success" th:href="@{/wh/register}">Add warehouse user</a>
+	<a class="btn btn-small btn-info" th:if="${userData}" th:href="@{/wh/pdf}">Export to Pdf</a>
+	<a class="btn btn-small btn-info" th:if="${userData}" th:href="@{/wh/excel}">Export to Excel</a>
+	<a class="btn btn-small btn-info" th:if="${userData}" th:href="@{/wh/charts}">Chart view</a>
+	<div th:if="${userData ne null}">
+		<table class="table table-hover">
+			<thead class="bg-secondary text-white">
+				<tr>
+					<th>ID</th>
+					<th>TYPE</th>
+					<th>CODE</th>
+					<th>FOR</th>
+					<th>EMAIL</th>
+					<th>CONTACT</th>
+					<th>ID TYPE</th>
+					<th>ID NUMBER</th>
+					<th>ACTIONS</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="wh : ${userData}">
+					<td th:text="${wh.id}"></td>
+					<td th:text="${wh.userType}"></td>
+					<td th:text="${wh.userCode}"></td>
+					<td th:text="${wh.userFor}"></td>
+					<td th:text="${wh.userEmail}"></td>
+					<td th:text="${wh.userContact}"></td>
+					<td th:text="${wh.userIdType}"></td>
+					<td th:text="${wh.userIdNumber}"></td>
+					<td>
+						<a class="btn btn-warning btn-sm" th:href="@{/wh/edit?id={id}(id=${wh.id})}">Edit</a>
+						<a class="btn btn-danger btn-sm" th:href="@{/wh/delete?id={id}(id=${wh.id})}"
+							th:data-value="${wh.id}"
+							th:onclick="return confirmDelete(this.getAttribute('data-value'))">Delete
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div th:unless="${userData ne null}" class="alert alert-info">
+		<strong>No user data available...!</strong>
+	</div>
+
+</body>
+</html>
