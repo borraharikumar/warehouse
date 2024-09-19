@@ -11,7 +11,13 @@
 
 	<h2 class="text-primary">Purchase Order - Register</h2>
 	<hr>
-	<form th:action="@{/po/save}" method="post" th:object="${po}" id="poRegForm">
+	<form th:action="@{/po/save}" method="post" th:object="${po}" id="poEditForm">
+		<div>
+			<label for="id"><strong>Id :</strong></label>
+			<input type="text" class="form-control" th:field="*{id}" readonly>
+			<span class="text-danger" id="id"></span>
+		</div>
+		<br>
 		<div>
 			<label for="orderCode"><strong>Order code :</strong></label>
 			<input type="text" class="form-control" th:field="*{orderCode}">
@@ -176,7 +182,7 @@
 		});
 		
 		//5. On submit function
-		$("#poRegForm").submit(function(){
+		$("#poEditForm").submit(function(){
 			validate_orderCode();
 			validate_shipmentType();
 			validate_whUserType();

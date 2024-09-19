@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>Purchase order - data</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<script type="text/javascript">
+	function confirmDelete(id) {
+		return confirm("Are you sure to delete purchase order '" + id + "' ?");
+	}
+</script>
+<body class="container container-fluid pt-3 pt-3">
+
+	<h2 class="text-primary">Purchase order - data</h2>
+	<hr>
+	<div th:if="${message ne null}" class="alert alert-success">
+		<strong th:text="${message}"></strong>
+	</div>
+	<a class="btn btn-success" th:href="@{/po/register}">Add purchase order</a>
+	<a class="btn btn-info" th:href="@{/po/pdf}" th:if="${poData ne null}">Export to pdf</a>
+	<a class="btn btn-info" th:href="@{/po/excel}" th:if="${poData ne null}">Export to excel</a>
+	<a class="btn btn-info" th:href="@{/po/charts}" th:if="${poData ne null}">Charts view</a>
+	<div th:if="${poData ne null}">
+		<table class="table table-hover">
+			<thead class="bg-secondary text-white">
+				<tr>
+					<th>SL NO</th>
+					<th>ID</th>
+					<th>CODE</th>
+					<th>SHIPMENT CODE</th>
+					<th>VENDOR</th>
+					<th>REF NUMBER</th>
+					<th>QLTY CHECK</th>
+					<th>STATUS</th>
+					<th>DESCRIPTION</th>
+					<th>ACTIONS</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="po, sv : ${poData}">
+					<td th:text="${sv.count}"></td>
+					<td th:text="${po.id}"></td>
+					<td th:text="${po.orderCode}"></td>
+					<td th:text="${po.shipmentType.shipmentCode}"></td>
+					<td th:text="${po.vendor.userCode}"></td>
+					<td th:text="${po.refNumber}"></td>
+					<td th:text="${po.qltyCheck}"></td>
+					<td th:text="${po.status}"></td>
+					<td th:text="${po.description}"></td>
+					<td>
+						<a class="btn btn-warning btn-sm" th:href="@{/po/edit?id={id}(id=${po.id})}">Edit</a>
+						<a class="btn btn-danger btn-sm" th:href="@{/po/delete?id={id}(id=${po.id})}"
+							th:data-value="${po.id}"
+							onclick="return confirmDelete(this.getAttribute('data-value'))">Delete
+						</a>
+						<a class="btn btn-warning btn-sm" th:href="@{/po/parts?id={id}(id=${po.id})}">Add parts</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div th:unless="${poData ne null}" class="alert alert-info">
+		<strong>No purchase order data found...!</strong>
+	</div>
+
+</body>
+</html>

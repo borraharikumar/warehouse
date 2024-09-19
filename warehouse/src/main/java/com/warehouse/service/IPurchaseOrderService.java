@@ -11,5 +11,7 @@ public interface IPurchaseOrderService {
 	public String updatePurchaseOrder(PurchaseOrder purchaseOrder);
 	public String deletePurchaseOrder(String id);
 	public List<PurchaseOrder> getPurchaseOrderData();
+	
+	public List<Object[]> getPurchaseOrderCountByQltyCheck();
 
 }

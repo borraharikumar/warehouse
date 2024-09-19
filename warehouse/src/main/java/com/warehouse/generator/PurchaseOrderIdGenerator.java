@@ -12,7 +12,7 @@ public class PurchaseOrderIdGenerator implements IdentifierGenerator {
 	@Override
 	public Object generate(SharedSessionContractImplementor session, Object object) {
 		String code = "PO";
-		Integer id = new Random().nextInt(100000, 99999);
+		Integer id = new Random().nextInt(100000, 999999);
 		return code+id;
 	}
 

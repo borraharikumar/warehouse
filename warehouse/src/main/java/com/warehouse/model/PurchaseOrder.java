@@ -31,7 +31,7 @@ public class PurchaseOrder {
 	
 	@ManyToOne
 	@JoinColumn(name = "wut_id_fk_col", nullable = false)
-	private WhUserType whUserType;
+	private WhUserType vendor;
 	
 	@Column(name = "po_ref_num_col", nullable = false)
 	private String refNumber;

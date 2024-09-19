@@ -44,4 +44,9 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
 		return list!=null?list:null;
 	}
 
+	@Override
+	public List<Object[]> getPurchaseOrderCountByQltyCheck() {
+		return purchaseOrderRepository.getPurchaseOrderCountByQltyCheck();
+	}
+
 }
