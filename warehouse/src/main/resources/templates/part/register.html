@@ -86,8 +86,8 @@
 		</div>
 		<br>
 		<div>
-			<label for="description"><strong>Base price :</strong></label>
-			<input type="text" class="form-control" th:field="*{description}">
+			<label for="description"><strong>Descriprion :</strong></label>
+			<textarea class="form-control" th:field="*{description}"></textarea>
 			<span class="text-danger" id="descriptionErr"></span>
 		</div>
 		<br>
@@ -135,8 +135,21 @@
 				$("#partCodeErr").html("Enter <b>valid Part code(4-15 characters)</b>");
 				partCodeErr  = false;
 			} else {
-				$("#partCodeErr").hide();
-				partCodeErr  = true;
+				$.ajax({
+					url : "validateOrderCode",
+					data : {"partCode" : val},
+					success : function(resText){
+						if(resText=="") {
+							$("#partCodeErr").hide();
+							partCodeErr  = true;
+						} else {
+							$("#partCodeErr").show();
+							$("#partCodeErr").html(resText);
+							partCodeErr  = false;
+						}
+					}
+				});
+				
 			}
 		}
 		function validate_partLength() {

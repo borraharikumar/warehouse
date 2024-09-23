@@ -1,6 +1,7 @@
 package com.warehouse.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.warehouse.exception.PartNotFoundException;
 import com.warehouse.model.Part;
 import com.warehouse.repository.IPartRepository;
+import com.warehouse.util.CollectionUtil;
 
 @Service
 public class PartServiceImpl implements IPartService {
@@ -42,6 +44,16 @@ public class PartServiceImpl implements IPartService {
 	public List<Part> getPartData() {
 		List<Part> list = partRepository.findAll();
 		return list!=null?list:null;
+	}
+
+	@Override
+	public Boolean isOrderCodeExist(String partCode) {
+		return partRepository.getCountOfOrderCode(partCode)>0;
+	}
+
+	@Override
+	public Map<String, String> getPartIdAndCode() {
+		return CollectionUtil.converListToMap(partRepository.getPartIdAndCode());
 	}
 
 }

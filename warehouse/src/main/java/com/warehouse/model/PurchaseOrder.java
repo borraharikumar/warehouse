@@ -40,7 +40,7 @@ public class PurchaseOrder {
 	private String qltyCheck;
 	
 	@Column(name = "po_status_col", nullable = false)
-	private String status = "OPEN";
+	private String status;
 	
 	@Column(name = "po_description")
 	private String description;

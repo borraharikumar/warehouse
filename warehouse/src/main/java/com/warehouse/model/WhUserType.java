@@ -23,24 +23,27 @@ public class WhUserType {
 	private String id;
 	
 	@Column(name = "user_type_col", nullable = false)
-	private String userType;
+	private String userType; // values[CUSTOMER, VENDOR]
 	
 	@Column(name = "user_code_col", unique = true, nullable = false)
-	private String userCode;
+	private String userCode; // /^[A-Z0-9\s\-]{4,15}$/
 	
 	@Column(name = "user_for_col", nullable = false)
-	private String userFor;
+	private String userFor; // values[if userType==CUSTOMER then SALE else PURCHASE]
 	
 	@Column(name = "user_email_col", nullable = false)
-	private String userEmail;
+	private String userEmail;	// /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/
 	
 	@Column(name = "user_contact_col", nullable = false)
-	private String userContact;
+	private String userContact; // /^[A-Za-z0-9\,\.\-\s]{5,50}$/
 	
 	@Column(name = "user_id_type_col", nullable = false)
-	private String userIdType;
+	private String userIdType;	// values[AADHAR, PAN, VOTER ID, OTHER]
 	
 	@Column(name = "user_id_number_col")
-	private String userIdNumber;
+	private String userIdNumber; // if userIdType==AADHAR, then userIdNumber==/^[0-9]{12}$/
+								 // if userIdType==PAN, then userIdNumber==/^[A-Z]{5}[0-9]{4}[A-Z]$/
+								 // if userIdType==VOTER ID, then userIdNumber==/^[A-Z]{3}[0-9]{7}$/
+								 // if userIdType==OTHER, then userIdNumber==/^[A-Z0-9\s\-]{4,15}$/
 	
 }

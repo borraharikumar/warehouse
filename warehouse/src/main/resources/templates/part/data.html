@@ -28,13 +28,13 @@
 				<tr>
 					<th>ID</th>
 					<th>CODE</th>
-					<th>DIMENSIONS<br>(L : W : H)</th>
+					<th>DIMENSIONS<br>(L | W | H)</th>
 					<th>PRICE</th>
 					<th>CUR</th>
 					<th>UOM MODEL</th>
 					<th>SALE ORDER<br>CODE</th>
 					<th>PURCHASE<br>ORDER CODE</th>
-					<th>DESCRIPTION</th>
+					<!-- <th>DESCRIPTION</th> -->
 					<th>ACTIONS</th>
 				</tr>
 			</thead>
@@ -44,9 +44,9 @@
 					<td th:text="${part.partCode}"></td>
 					<td>
 						<span th:text="${part.partLength}"></span>
-						<strong> : </strong>
+						<strong>|</strong>
 						<span th:text="${part.partWidth}"></span>
-						<strong> : </strong>
+						<strong>|</strong>
 						<span th:text="${part.partHeight}"></span>
 					</td>
 					<td th:text="${part.partBasePrice}"></td>
@@ -54,7 +54,7 @@
 					<td th:text="${part.uom.uomModel}"></td>
 					<td th:text="${part.omSale.orderCode}"></td>
 					<td th:text="${part.omPurchase.orderCode}"></td>
-					<td th:text="${part.description}"></td>
+					<!-- <td th:text="${part.description}"></td> -->
 					<td>
 						<a class="btn btn-warning btn-sm" th:href="@{/part/edit?id={id}(id=${part.id})}">Edit</a>
 						<a class="btn btn-danger btn-sm" th:href="@{/part/delete?id={id}(id=${part.id})}"

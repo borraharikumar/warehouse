@@ -28,18 +28,18 @@ public class OrderMethod {
 	private String id;
 	
 	@Column(name = "order_mode_col", nullable = false)
-	private String orderMode;
+	private String orderMode; // values[SALE, PURCHASE]
 	
 	@Column(name = "order_code_col", unique = true, nullable = false)
-	private String orderCode;
+	private String orderCode; ///^[A-Z\-\s]{4,15}$/
 	
 	@Column(name = "order_type_col", nullable = false)
-	private String orderType;
+	private String orderType; // values[FIFO, LIFO, FCFO, FEFO]
 	
 	@ElementCollection
 	@CollectionTable(name = "order_accept_tab", joinColumns = @JoinColumn(referencedColumnName = "order_id_col"))
 	@Column(name = "order_accept_col")
-	private Set<String> orderAccept;
+	private Set<String> orderAccept; // values[Multi-Model, Accept return]
 	
 	@Column(name = "description_tab")
 	private String description;

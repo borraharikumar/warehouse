@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -88,6 +89,11 @@ public class PartController {
 		modelAndView.setView(new PartPdfView());
 		modelAndView.addObject("data", partService.getPartData());
 		return modelAndView;
+	}
+	
+	@GetMapping("/validateOrderCode")
+	public @ResponseBody String validateOrderCode(@RequestParam String partCode) {
+		return partService.isOrderCodeExist(partCode)?"<b>Order code already exist</b>":"";
 	}
 	
 }

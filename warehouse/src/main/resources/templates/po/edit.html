@@ -7,7 +7,7 @@
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
 	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 </head>
-<body class="container container-fluid pt-3 pb-3">
+<body class="container container-fluid pt-3 pb-3 bg-light">
 
 	<h2 class="text-primary">Purchase Order - Register</h2>
 	<hr>
@@ -20,7 +20,7 @@
 		<br>
 		<div>
 			<label for="orderCode"><strong>Order code :</strong></label>
-			<input type="text" class="form-control" th:field="*{orderCode}">
+			<input type="text" class="form-control" th:field="*{orderCode}" readonly>
 			<span class="text-danger" id="orderCodeErr"></span>
 		</div>
 		<br>
@@ -44,7 +44,7 @@
 		<br>
 		<div>
 			<label for="refNumber"><strong>Reference number :</strong></label>
-			<input type="number" class="form-control" th:field="*{refNumber}" min="0">
+			<input type="number" class="form-control" th:field="*{refNumber}" min="0" readonly>
 			<span class="text-danger" id="refNumberErr"></span>
 		</div>
 		<br>
@@ -127,7 +127,7 @@
 			}
 		}
 		function validate_whUserType() {
-			var val = $("#whUserType").val();
+			var val = $("#vendor").val();
 			if(val=="") {
 				$("#whUserTypeErr").show();
 				$("#whUserTypeErr").html("Select <b>User code</b>");
@@ -171,7 +171,7 @@
 		$("#shipmentType").change(function(){
 			validate_shipmentType();
 		});
-		$("#whUserType").change(function(){
+		$("#vendor").change(function(){
 			validate_whUserType();
 		});
 		$("#refNumber").keyup(function(){

@@ -20,10 +20,10 @@ public class Part {
 	@Id
 	@GeneratedValue(generator = "part_id_gen")
 	@GenericGenerator(name = "part_id_gen", strategy = "com.warehouse.generator.PartIdGenerator")
-	private String id;
+	private String id; // PART+5 digits
 	
 	@Column(name = "part_code_col")
-	private String partCode;
+	private String partCode; // /^[A-Z0-9\s\-\_]{4,15}$/
 	
 	@Column(name = "part_length_col")
 	private Double partLength;
@@ -39,15 +39,15 @@ public class Part {
 	
 	@ManyToOne
 	@JoinColumn(name = "uom_id_fk_col")
-	private Uom uom;
+	private Uom uom; // Use previously generated Uom data
 	
 	@ManyToOne
 	@JoinColumn(name = "om_sale_id_fk_col")
-	private OrderMethod omSale;
+	private OrderMethod omSale; // Use previously generated OrderMethod data where orderMode==SALE
 	
 	@ManyToOne
 	@JoinColumn(name = "om_purchase_id_fk_col")
-	private OrderMethod omPurchase;
+	private OrderMethod omPurchase; // Use previously generated OrderMethod data where orderMode==PURCHASE
 	
 	@Column(name = "part_desc_col")
 	private String description;

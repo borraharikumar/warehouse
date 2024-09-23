@@ -23,16 +23,16 @@ public class ShipmentType {
 	private String id;
 	
 	@Column(name = "shipemnt_mode_col", nullable = false)
-	private String shipmentMode;
+	private String shipmentMode; // values[AIR, TRUCK, SHIP, TRAIN]
 	
 	@Column(name = "shipment_code_col", unique = true, nullable = false)
-	private String shipmentCode;
+	private String shipmentCode; // /^[A-Z\-\s]{4,15}$/
 	
 	@Column(name = "enable_shipment_col", nullable = false)
-	private String enableShipment;
+	private String enableShipment; // values[YES, NO]
 	
 	@Column(name = "shipment_grade_col", nullable = false)
-	private Character shipmentGrade;
+	private Character shipmentGrade; //values[A, B, C]
 	
 	@Column(name = "description_col")
 	private String description;

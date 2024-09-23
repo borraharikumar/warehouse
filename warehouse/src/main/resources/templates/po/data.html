@@ -27,7 +27,6 @@
 		<table class="table table-hover">
 			<thead class="bg-secondary text-white">
 				<tr>
-					<th>SL NO</th>
 					<th>ID</th>
 					<th>CODE</th>
 					<th>SHIPMENT CODE</th>
@@ -35,13 +34,11 @@
 					<th>REF NUMBER</th>
 					<th>QLTY CHECK</th>
 					<th>STATUS</th>
-					<th>DESCRIPTION</th>
 					<th>ACTIONS</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="po, sv : ${poData}">
-					<td th:text="${sv.count}"></td>
+				<tr th:each="po : ${poData}">
 					<td th:text="${po.id}"></td>
 					<td th:text="${po.orderCode}"></td>
 					<td th:text="${po.shipmentType.shipmentCode}"></td>
@@ -49,14 +46,19 @@
 					<td th:text="${po.refNumber}"></td>
 					<td th:text="${po.qltyCheck}"></td>
 					<td th:text="${po.status}"></td>
-					<td th:text="${po.description}"></td>
 					<td>
-						<a class="btn btn-warning btn-sm" th:href="@{/po/edit?id={id}(id=${po.id})}">Edit</a>
-						<a class="btn btn-danger btn-sm" th:href="@{/po/delete?id={id}(id=${po.id})}"
-							th:data-value="${po.id}"
-							onclick="return confirmDelete(this.getAttribute('data-value'))">Delete
+						<a class="btn btn-info btn-sm" th:if="${po.status!='CANCELED'}"
+							th:href="@{/po/parts?id={id}(id=${po.id})}">Order info.
 						</a>
-						<a class="btn btn-warning btn-sm" th:href="@{/po/parts?id={id}(id=${po.id})}">Add parts</a>
+						<a class="btn btn-warning btn-sm bi bi-receipt" th:if="${po.status=='ORDERED'}"
+							th:href="@{/po/generateInvoice?id={id}(id=${po.id})}"> Invoice
+						</a>
+						<a class="btn btn-success btn-sm bi bi-printer" th:if="${po.status=='INVOICED' || po.status=='RECEIVED'}"
+							th:href="@{/po/printInvoice?id={id}(id=${po.id})}"> Invoice
+						</a>
+						<a class="btn btn-danger btn-sm bi bi-x-square" th:if="${po.status=='PICKING' || po.status=='ORDERED'}"
+							th:href="@{/po/cancelOrder?id={id}(id=${po.id})}"> order
+						</a>
 					</td>
 				</tr>
 			</tbody>

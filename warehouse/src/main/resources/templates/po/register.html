@@ -8,7 +8,7 @@
 	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 </head>
 <body class="container container-fluid pt-3 pb-3">
-
+<div class="bg-light rounded">
 	<h2 class="text-primary">Purchase Order - Register</h2>
 	<hr>
 	<form th:action="@{/po/save}" method="post" th:object="${po}" id="poRegForm">
@@ -105,8 +105,20 @@
 				$("#orderCodeErr").html("Enter <b>valid Order code(4-15 characters)</b>");
 				orderCodeErr = false;
 			} else {
-				$("#orderCodeErr").hide();
-				orderCodeErr = true;
+				$.ajax({
+					url : "validateOrderCode",
+					data : {"orderCode" : val},
+					success : function(resText) {
+						if(resText=="") {
+							$("#orderCodeErr").hide();
+							orderCodeErr = true;
+						} else {
+							$("#orderCodeErr").show();
+							$("#orderCodeErr").html(resText);
+							orderCodeErr = true;
+						}
+					}
+				});
 			}
 		}
 		function validate_shipmentType() {
@@ -121,7 +133,7 @@
 			}
 		}
 		function validate_whUserType() {
-			var val = $("#whUserType").val();
+			var val = $("#vendor").val();
 			if(val=="") {
 				$("#whUserTypeErr").show();
 				$("#whUserTypeErr").html("Select <b>User code</b>");
@@ -142,8 +154,20 @@
 				$("#refNumberErr").html("Enter <b>Valid reference number</b>");
 				refNumberErr = false;
 			} else {
-				$("#refNumberErr").hide();
-				refNumberErr = true;
+				$.ajax({
+					url : "validateRefNumber",
+					data : {"refNumber" : val},
+					success : function(resText) {
+						if(resText=="") {
+							$("#refNumberErr").hide();
+							refNumberErr = true;
+						} else {
+							$("#refNumberErr").show();
+							$("#refNumberErr").html(resText);
+							refNumberErr = true;
+						}
+					}
+				});
 			}
 		}
 		function validate_qltyCheck() {
@@ -165,7 +189,7 @@
 		$("#shipmentType").change(function(){
 			validate_shipmentType();
 		});
-		$("#whUserType").change(function(){
+		$("#vendor").change(function(){
 			validate_whUserType();
 		});
 		$("#refNumber").keyup(function(){
@@ -191,5 +215,6 @@
 		
 	});
 	</script>
+</div>
 </body>
 </html>
