@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>GRN - Register</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<body class="container container-fluid pt-3 pb-3">
+<div class="rounded bg-light pt-2 pb-2 pl-2 pr-2">
+	<h2 class="text-primary">GRN - Register</h2>
+	<hr>
+	<form th:action="@{/grn/save}" th:object="${grn}" method="post" id="grnRegForm">
+		<div>
+			<label for="grnCode"><strong>GRN code :</strong></label>
+			<input type="text" class="form-control" th:field="*{grnCode}">
+			<span class="text-danger"></span>
+		</div>
+		<br>
+		<div>
+			<label for="grnType"><strong>GRN type :</strong></label>
+			<input type="text" class="form-control" th:field="*{grnType}">
+			<span class="text-danger"></span>
+		</div>
+		<br>
+		<div>
+			<label for="orderCode"><strong>Order code :</strong></label>
+			<select class="form-control" th:field="*{po}">
+				<option value="">== SELECT ==</option>
+				<option th:each="po:${pos}" th:value="${po.key}" th:text="${po.value}"></option>
+			</select>
+			<span class="text-danger"></span>
+		</div>
+		<br>
+		<div>
+			<label for="decscription"><strong>Description</strong></label>
+			<textarea class="form-control" th:field="*{decscription}"></textarea>
+			<span class="text-danger"></span>
+		</div>
+		<br>
+		<div>
+			<a class="btn btn-info" th:href="@{/grn/data}">Go to GRN data</a>
+			<button type="reset" class="btn btn-warning">Reset</button>
+			<button type="submit" class="btn btn-success">Submit</button>
+		</div>
+	</form>
+</div>
+</body>
+</html>

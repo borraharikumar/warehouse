@@ -22,6 +22,9 @@ public interface IPurchaseOrderRepository extends JpaRepository<PurchaseOrder, S
 	@Query("SELECT id, orderCode FROM PurchaseOrder")
 	public List<Object[]> getOrderIdAndCode();
 	
+	@Query("SELECT id, orderCode FROM PurchaseOrder WHERE status=:status")
+	public List<Object[]> getOrderIdAndCodeByOrderStatus(String status);
+	
 	@Modifying
 	@Query("UPDATE PurchaseOrder po SET po.status=:status WHERE po.id=:id")
 	public void changeOrderStatusById(String id, String status);

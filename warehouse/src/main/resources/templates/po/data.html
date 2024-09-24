@@ -13,7 +13,7 @@
 	}
 </script>
 <body class="container container-fluid pt-3 pt-3">
-
+<div class="bg-light pt-2 pb-2 pl-2 pr-2">
 	<h2 class="text-primary">Purchase order - data</h2>
 	<hr>
 	<div th:if="${message ne null}" class="alert alert-success">
@@ -45,7 +45,7 @@
 					<td th:text="${po.vendor.userCode}"></td>
 					<td th:text="${po.refNumber}"></td>
 					<td th:text="${po.qltyCheck}"></td>
-					<td th:text="${po.status}"></td>
+					<td><strong th:text="${po.status}"></strong></td>
 					<td>
 						<a class="btn btn-info btn-sm" th:if="${po.status!='CANCELED'}"
 							th:href="@{/po/parts?id={id}(id=${po.id})}">Order info.
@@ -56,7 +56,8 @@
 						<a class="btn btn-success btn-sm bi bi-printer" th:if="${po.status=='INVOICED' || po.status=='RECEIVED'}"
 							th:href="@{/po/printInvoice?id={id}(id=${po.id})}"> Invoice
 						</a>
-						<a class="btn btn-danger btn-sm bi bi-x-square" th:if="${po.status=='PICKING' || po.status=='ORDERED'}"
+						<a class="btn btn-danger btn-sm bi bi-x-square"
+							th:if="${po.status=='PICKING' || po.status=='ORDERED' || po.status=='OPEN'}"
 							th:href="@{/po/cancelOrder?id={id}(id=${po.id})}"> order
 						</a>
 					</td>
@@ -67,6 +68,6 @@
 	<div th:unless="${poData ne null}" class="alert alert-info">
 		<strong>No purchase order data found...!</strong>
 	</div>
-
+</div>
 </body>
 </html>

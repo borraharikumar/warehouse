@@ -145,7 +145,8 @@ public class PurchaseOrderController {
 				}
 			});
 		} else {
-			purchaseOrderService.changePurchaseOrderStatus(id, "OPEN");
+			if(po.getStatus()!="CANCELED")
+				purchaseOrderService.changePurchaseOrderStatus(id, "OPEN");
 		}
 		//Add Attributes to the Model object
 		model.addAttribute("purchaseOrderDtl", purchaseOrderDtl);

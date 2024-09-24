@@ -20,6 +20,7 @@ public interface IPurchaseOrderService {
 	public Boolean isRefNumberExist(String refNumber);
 	public Map<String, String> getPurchaseOrderIdAndCode();
 	public void changePurchaseOrderStatus(String id, String status);
+	public Map<String, String> getOrderIdAndCodeByOrderStatus(String status);
 	
 	//******************************** PurchaseOrderDtl methods *******************************//
 	public void inserPurchaseOrderDtl(PurchaseOrderDtl purchaseOrderDtl);

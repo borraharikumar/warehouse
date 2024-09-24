@@ -128,7 +128,9 @@
 			th:href="@{/po/generateInvoice?id={id}(id=${purchaseOrderDtl.purchaseOrder.id})}">Generate Invoice
 		</a>
 		<a class="btn btn-danger"
-			th:if="${purchaseOrderDtl.purchaseOrder.status=='PICKING' || purchaseOrderDtl.purchaseOrder.status=='ORDERED'}"
+			th:if="${purchaseOrderDtl.purchaseOrder.status=='PICKING' 
+						|| purchaseOrderDtl.purchaseOrder.status=='ORDERED'
+						|| purchaseOrderDtl.purchaseOrder.status=='OPEN'}"
 			th:href="@{/po/cancelOrder?id={id}(id=${purchaseOrderDtl.purchaseOrder.id})}">Cancel order
 		</a>
 		<a class="btn btn-success" th:if="${purchaseOrderDtl.purchaseOrder.status=='INVOICED'}"

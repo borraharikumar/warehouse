@@ -95,4 +95,9 @@ public class PurchaseOrderServiceImpl implements IPurchaseOrderService {
 		purchaseOrderRepository.changeOrderStatusById(id, status);
 	}
 
+	@Override
+	public Map<String, String> getOrderIdAndCodeByOrderStatus(String status) {
+		return CollectionUtil.converListToMap(purchaseOrderRepository.getOrderIdAndCodeByOrderStatus(status));
+	}
+
 }

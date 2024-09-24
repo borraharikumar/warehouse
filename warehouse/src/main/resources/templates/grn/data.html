@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>GRN - Data</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<body class="container container-fluid pt-3 pb-3">
+<div class="rounded bg-light pt-2 pb-2 pl-2 pr-2">
+	<h2 class="text-primary">GRN - Data</h2>
+	<hr>
+	<div class="alert alert-success" th:if="${message ne null}">
+		<strong th:text="${message}"></strong>
+	</div>
+	<a class="btn btn-success" th:href=@{/grn/register}>Add GRN</a>
+	<a class="btn btn-info" th:if="${grnData ne null}">Export to pdf</a>
+	<a class="btn btn-info" th:if="${grnData ne null}">Export to excel</a>
+	<table th:if="${grnData ne null}" class="table table-hover">
+		<thead class="bg-secondary text-white">
+			<tr>
+				<th>ID</th>
+				<th>CODE</th>
+				<th>TYPE</th>
+				<th>ORDER</th>
+				<th>DESCRIPTION</th>
+				<th>ACTIONS</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="grn:${grnData}">
+				<td th:text="${grn.id}"></td>
+				<td th:text="${grn.grnCode}"></td>
+				<td th:text="${grn.grnType}"></td>
+				<td th:text="${grn.po.orderCode}"></td>
+				<td th:text="${grn.decscription}"></td>
+				<td>
+					<a class="btn btn-info btn-sm" th:href="@{/grn/info?grnId={grnId}(grnId=${grn.id})}">View info.</a>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+	<div th:unless="${grnData ne null}" class="alert alert-info">
+		<strong>No GRN data found...!</strong>
+	</div>
+</div>
+</body>
+</html>

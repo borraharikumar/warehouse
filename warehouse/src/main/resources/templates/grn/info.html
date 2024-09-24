@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>GRN - Details</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+</head>
+<body class="container container-fluid pt-3 pb3">
+<div class="bg-light pt-2 pb-2 pl-2 pr-2">
+	<h2 class="text-primary">GRN - Details</h2>
+	<hr>
+	<div class="row">
+			<label class="col-2"><strong>GRN code :</strong></label>
+			<input type="text" class="form-control col-3" th:value="${grn.grnCode}" disabled>
+			<label  class="col-2"><strong>Order code :</strong></label>
+			<input type="text" class="form-control col-3" th:value="${grn.po.orderCode}" disabled>
+	</div>
+	<hr>
+	<div align="right">
+		<a class="btn btn-info" th:href="@{/grn/data}">Go back</a>
+		<a class="btn btn-success">Accept All</a>
+		<a class="btn btn-danger">Reject All</a>
+	</div>
+	<table class="table table-hover">
+		<thead class="bg-secondary text-white">
+			<tr>
+				<th>ITEM CODE</th>
+				<th>BASE COST</th>
+				<th>QUANTITY</th>
+				<th>LOT VALUE(Inc. GST)</th>
+				<th>STATUS</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr th:each="ob:${grnDtls}">
+				<td th:text="${ob.itemCode}"></td>
+				<td th:text="${ob.baseCost}"></td>
+				<td th:text="${ob.qty}"></td>
+				<td th:text="${ob.lotValue}"></td>
+				<td>
+					<div th:if="${ob.status == null}">
+						<a class="btn btn-success btn-sm"
+							th:href="@{/grn/changeStatus(status='ACCEPTED',grnId=${ob.grn.id},grnDtlId=${ob.id})}">Accept
+						</a>
+						<a class="btn btn-danger btn-sm"
+							th:href="@{/grn/changeStatus(status='REJECTED',grnId=${ob.grn.id},grnDtlId=${ob.id})}">Reject
+						</a>
+					</div>
+					<div th:unless="${ob.status == null}">
+						<span  th:if="${ob.status == 'ACCEPTED'}" class="text-success">
+							<strong th:text="${ob.status}"></strong>
+						</span>
+						<span  th:if="${ob.status == 'REJECTED'}" class="text-danger">
+							<strong th:text="${ob.status}"></strong>
+						</span>
+					</div>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+</body>
+</html>
