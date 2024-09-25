@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>SaleOrder - Register</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+<script type="text/javascript">
+	$(document).ready(function() {
+		//1. Hide error component
+		$("#orderCodeErr").hide();
+		$("#shipmentTypeErr").hide();
+		$("#customerErr").hide();
+		$("#refNumberErr").hide();
+		$("#stockModeErr").hide();
+		$("#stockSourceErr").hide();
+		
+		//2. Define error variable
+		var orderCodeErr = false;
+		var shipmentTypeErr = false;
+		var customerErr = false;
+		var refNumberErr = false;
+		var stockModeErr = false;
+		var stockSourceErr = false;
+		
+		//3. Define validate function
+		function validate_orderCode() {
+			var val = $("#orderCode").val();
+			var exp = /^[A-Z0-9\-\s]{4,20}$/;
+			if(val=="") {
+				$("#orderCodeErr").show();
+				$("#orderCodeErr").html("Enter <b>order code</b>");
+				orderCodeErr = false;
+			} else if(!exp.test(val)) {
+				$("#orderCodeErr").show();
+				$("#orderCodeErr").html("Enter <b>valid order code(4-20 characters)(Allowed chatacters - A-Z,0-9, ,-)</b>");
+				orderCodeErr = false;
+			} else {
+				$.ajax({
+					url : "validate",
+					data : {"type" : "orderCode", "value" : val},
+					success : function(resText) {
+						if(resText=="") {
+							$("#orderCodeErr").hide();
+							orderCodeErr = true;
+						} else {
+							$("#orderCodeErr").show();
+							$("#orderCodeErr").html(resText);
+							orderCodeErr = false;
+						}
+					}
+				});
+			}
+		}
+		function validate_shipmentType() {
+			var val = $("#shipmentType").val();
+			if(val=="") {
+				$("#shipmentTypeErr").show();
+				$("#shipmentTypeErr").html("Select <b>shipment code</b>");
+				shipmentTypeErr = false;
+			} else {
+				$("#shipmentTypeErr").hide();
+				shipmentTypeErr = true;
+			}
+		}
+		function validate_customer() {
+			var val = $("#customer").val();
+			if(val=="") {
+				$("#customerErr").show();
+				$("#customerErr").html("Select <b>customer code</b>");
+				customerErr = false;
+			} else {
+				$("#customerErr").hide();
+				customerErr = true;
+			}
+		}
+		function validate_refNumber() {
+			var val = $("#refNumber").val();
+			var exp = /^[A-Z0-9\-\s]{4,20}$/;
+			if(val=="") {
+				$("#refNumberErr").show();
+				$("#refNumberErr").html("Enter <b>reference number</b>");
+				refNumberErr = false;
+			} else if(!exp.test(val)) {
+				$("#refNumberErr").show();
+				$("#refNumberErr").html("Enter <b>valid reference number(4-20 characters)(Allowed chatacters - A-Z,0-9, ,-)</b>");
+				refNumberErr = false;
+			} else {
+				$.ajax({
+					url : "validate",
+					data : {"type" : "refNumber", "value" : val},
+					success : function(resText) {
+						if(resText=="") {
+							$("#refNumberErr").hide();
+							refNumberErr = true;
+						} else {
+							$("#refNumberErr").show();
+							$("#refNumberErr").html(resText);
+							refNumberErr = true;
+						}
+					}
+				});
+			}
+		}
+		function validate_stockMode() {
+			if(!$("input[name='stockMode']:checked").val()) {
+				$("#stockModeErr").show();
+				$("#stockModeErr").html("Select <b>stock mode</b><br>");
+				stockModeErr = false;
+			} else {
+				$("#stockModeErr").hide();
+				stockModeErr = true;
+			}
+		}
+		function validate_stockSourceErr() {
+			var val = $("#stockSource").val();
+			if(val=="") {
+				$("#stockSourceErr").show();
+				$("#stockSourceErr").html("Select <b>stock source</b>");
+				stockSourceErr = false;
+			} else {
+				$("#stockSourceErr").hide();
+				stockSourceErr = true;
+			}
+		}
+		
+		//4. Link validate function with event
+		$("#orderCode").keyup(function() {
+			$("#orderCode").val($("#orderCode").val().toUpperCase());
+			validate_orderCode();
+		});
+		$("#shipmentType").change(function() {
+			validate_shipmentType();
+		});
+		$("#customer").change(function() {
+			validate_customer();
+		});
+		$("#refNumber").keyup(function() {
+			$("#refNumber").val($("#refNumber").val().toUpperCase());
+			validate_refNumber();
+		});
+		$("input[name='stockMode']").change(function() {
+			validate_stockMode();
+		});
+		$("#stockSource").change(function() {
+			validate_stockSourceErr();
+		});
+		
+		//5. On submit event
+		$("#soRegForm").submit(function() {
+			validate_orderCode();
+			validate_shipmentType();
+			validate_customer();
+			validate_refNumber();
+			validate_stockMode();
+			validate_stockSourceErr();
+			if(orderCodeErr && shipmentTypeErr && customerErr && refNumberErr && stockModeErr && stockSourceErr) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+	});
+</script>
+<body class="container container-fluid pt-3 pb3">
+<div class="bg-light pt-2 pb-2 pl-2 pr-2">
+	<h2 class="text-primary">SaleOrder - Register</h2>
+	<hr>
+	<form th:action="@{/so/save}" method="post" th:object="${so}" id="soRegForm">
+		<div>
+			<label for="orderCode"><strong>Order code :</strong></label>
+			<input type="text" class="form-control" th:field="*{orderCode}">
+			<span class="text-danger" id="orderCodeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="shipmentType"><strong>Shipment code :</strong></label>
+			<select class="form-control" th:field="*{shipmentType}">
+				<option value="">== SELECT ==</option>
+				<option th:each="st:${sts}" th:value="${st.key}" th:text="${st.value}"></option>
+			</select>
+			<span class="text-danger" id="shipmentTypeErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="customer"><strong>Customer :</strong></label>
+			<select class="form-control" th:field="*{customer}">
+				<option value="">== SELECT ==</option>
+				<option th:each="wut:${wuts}" th:value="${wut.key}" th:text="${wut.value}"></option>
+			</select>
+			<span class="text-danger" id="customerErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for="refNumber"><strong>Reference number :</strong></label>
+			<input type="text" class="form-control" th:field="*{refNumber}">
+			<span class="text-danger" id="refNumberErr"></span>
+		</div>
+		<br>
+		<div class="row">
+			<div class="col">
+				<strong>Stock mode :</strong>
+			</div>
+			<div class="col">
+				<input type="radio" value="GRADE" class="form-check-input" th:field="*{stockMode}">
+				<label for="stockMode1">GRADE</label>
+			</div>
+			<div class="col">
+				<input type="radio" value="MARGIN" class="form-check-input" th:field="*{stockMode}">
+				<label for="stockMode2">MARGIN</label>
+			</div>
+		</div>
+		<span class="text-danger" id="stockModeErr"><br></span>
+		<br>
+		<div>
+			<label for="stockSource"><strong>Stock source :</strong></label>
+			<select class="form-control" th:field="*{stockSource}">
+				<option value="">== SELECT ==</option>
+				<option value="OPEN">OPEN</option>
+				<option value="AVAIL">AVAIL</option>
+				<option value="REFUND">REFUND</option>
+			</select>
+			<span class="text-danger" id="stockSourceErr"></span>
+		</div>
+		<br>
+		<div>
+			<label for=""><strong>Default status :</strong></label>
+			<input type="text" class="form-control" th:field="*{status}" readonly>
+		</div>
+		<br>
+		<div>
+			<label for=""><strong>Description :</strong></label>
+			<textarea class="form-control" th:field="*{description}"></textarea>
+		</div>
+		<br>
+		<div>
+			<a class="btn btn-info" th:href="@{/so/data}">Go to SaleOrder data</a>
+			<button class="btn btn-warning" type="reset">Reset</button>
+			<button class="btn btn-success" type="submit">Submit</button>
+		</div>
+	</form>
+</div>
+</body>
+</html>

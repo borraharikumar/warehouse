@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+
+<head>
+	<meta charset="ISO-8859-1">
+	<title>SaleOrder - Info</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+	<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+</head>
+
+<script type="text/javascript">
+	$(document).ready(function(){
+		//1. Hide error variable
+		$("#partErr").hide();
+		$("#qtyErr").hide();
+		
+		//2. Define error variable
+		var partErr = false;
+		var qtyErr = false;
+		
+		//3. Define validate function
+		function validate_part() {
+			var val = $("#part").val();
+			if(val==""){
+				$("#partErr").show();
+				$("#partErr").html("Select <b>item code</b>");
+				partErr = false;
+			} else {
+				$("#partErr").hide();
+				partErr = true;
+			}
+		}
+		function validate_qty() {
+			var val = $("#qty").val();
+			if(val=="" || val=="0"){
+				$("#qtyErr").show();
+				$("#qtyErr").html("Enter <b>quantity</b>");
+				qtyErr = false;
+			} else {
+				$("#qtyErr").hide();
+				qtyErr = true;
+			}
+		}
+		
+		//4. Onsubmit function
+		$("#addPartForm").submit(function(){
+			validate_part();
+			validate_qty();
+			if(partErr && qtyErr) {
+				return true;
+			} else {
+				return false;
+			}
+		});
+	});
+</script>
+
+<body class="container container-fluid pt-3 pb-3">
+	<div class="bg-light pt-2 pb-2 pl-2 pr-2 rounded">
+		<h2 class="text-primary">SaleOrder - Info</h2>
+		<hr>
+		<div class="row">
+			<strong class="col-2">Order code :</strong>
+			<input type="text" class="form-control col-3" th:value="${soDtl.so.orderCode}" readonly>
+			<strong class="col-2">Status :</strong>
+			<input type="text" class="form-control col-3" th:value="${soDtl.so.status}" readonly>
+		</div>
+		<hr>
+		<form th:action="@{/so/addPart}" th:object="${soDtl}" id="addPartForm"
+					th:if="${soDtl.so.status=='SALE-OPEN' || soDtl.so.status=='SALE-READY'}">
+			<input type="hidden" th:field=*{so}>
+			<div class="row">
+				<div class="col-5">
+					<label for="part"><strong>Select item :</strong></label> <select
+						class="form-control" th:field="*{part}">
+						<option value="">== SELECT ==</option>
+						<option th:each="part:${parts}" th:value="${part.key}"
+							th:text="${part.value}"></option>
+					</select> <span class="text-danger" id="partErr"></span>
+				</div>
+				<div class="col-5">
+					<label for="qty"><strong>Quantity :</strong></label> <input
+						type="number" class="form-control" th:field="*{qty}"> <span
+						class="text-danger" id="qtyErr"></span>
+				</div>
+				<div class="col-2">
+					<br>
+					<button type="submit" class="btn btn-success">Add</button>
+				</div>
+			</div>
+		</form>
+		<br>
+		<table class="table table-hover" th:if="${soDtlData ne null}">
+			<thead class="bg-secondary text-white">
+				<tr>
+					<th>SL No.</th>
+					<th>ITEM</th>
+					<th>BASE COST</th>
+					<th>QUANTITY</th>
+					<th th:if="${soDtl.so.status=='SALE-READY'}"></th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="sod,i:${soDtlData}">
+					<td th:text="${i.count}"></td>
+					<td th:text="${sod.part.partCode}"></td>
+					<td th:text="${sod.part.partBasePrice}"></td>
+					<td th:text="${sod.qty}"></td>
+					<!-- <td th:value="${so.part.partBasePrice*so.qty + ()so.part.partBasePrice*so.qty*18)/100}"></td> -->
+					<td th:if="${soDtl.so.status=='SALE-READY'}">
+						<a class="btn btn-danger btn-sm"
+							th:href="@{/so/removePart(soId=${sod.so.id}, sodId=${sod.id})}">Remove
+						</a>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<hr>
+		<div align="center">
+			<a class="btn btn-info" th:href="@{/so/data}">Go back</a>
+			<a class="btn btn-success" th:href="@{/so/placeOrder?soId={id}(id=${soDtl.so.id})}"
+				th:if="${soDtl.so.status=='SALE-READY'}">Place order
+			</a>
+			<a class="btn btn-warning" th:href="@{/so/generateInvoice?soId={id}(id=${soDtl.so.id})}"
+				th:if="${soDtl.so.status=='SALE-CONFIRM'}"
+				>Generate invoice
+			</a>
+			<a class="btn btn-success" th:href="@{/so/printInvoice?soId={id}(id=${soDtl.so.id})}"
+				th:if="${soDtl.so.status=='SALE-INVOICED' || soDtl.so.status=='SALE-SHIPPED'}"
+				>Print invoice
+			</a>
+			<a class="btn btn-danger" th:href="@{/so/cancelOrder?soId={id}(id=${soDtl.so.id})}"
+				th:if="${soDtl.so.status=='SALE-READY' || soDtl.so.status=='SALE-OPEN' || soDtl.so.status=='SALE-CONFIRM'}"
+				>Cancel order
+			</a>
+		</div>
+	</div>
+</body>
+</html>

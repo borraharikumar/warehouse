@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org/">
+<head>
+	<meta charset="ISO-8859-1">
+	<title>SaleOrder - Data</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.css">
+</head>
+<script type="text/javascript">
+	function confirmDelete(id) {
+		return confirm("Are you sure to delete SaleOrder with id '" + id + "' ?");
+	}
+</script>
+<body class="container container-fluid pt-3 pb-3">
+<div class="bg-light pt-2  pb-2 pl-2 pr-2">
+	<h2 class="text-primary">SaleOrder - Data</h2>
+	<hr>
+	<div th:if="${message ne null}" class="alert alert-success">
+		<strong th:text="${message}"></strong>
+	</div>
+	<a class="btn btn-success" th:href="@{/so/register}">Add SaleOrder</a>
+	<a class="btn btn-info" th:href="@{/so/pdf}" th:if="${soData ne nul}">Export to pdf</a>
+	<a class="btn btn-info" th:href="@{/so/excel}" th:if="${soData ne nul}">Export to excel</a>
+	<a class="btn btn-info" th:href="@{/so/charts}" th:if="${soData ne nul}">Charts view</a>
+	<div th:if="${soData ne nul}">
+		<table class="table table-hover">
+			<thead class="bg-secondary text-white">
+				<tr>
+					<th>ID</th>
+					<th>CODE</th>
+					<th>SHIPMENT</th>
+					<th>CUSTOMER</th>
+					<th>REF NUMBER</th>
+					<th>STOCK MODE</th>
+					<th>STOCK SOURCE</th>
+					<th>STATUS</th>
+					<th>ACTIONS</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="so : ${soData}">
+					<td th:text="${so.id}"></td>
+					<td th:text="${so.orderCode}"></td>
+					<td th:text="${so.shipmentType.shipmentCode}"></td>
+					<td th:text="${so.customer.userCode}"></td>
+					<td th:text="${so.refNumber}"></td>
+					<td th:text="${so.stockMode}"></td>
+					<td th:text="${so.stockSource}"></td>
+					<td><strong th:text="${so.status}"></strong></td>
+					<td>
+						<a class="btn btn-info btn-sm" th:href="@{/so/info?id={id}(id=${so.id})}"
+							th:if="${so.status != 'SALE-CANCEL'}">Order info
+						</a>
+						
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div> 
+	<div th:unless="${soData ne nul}">
+	
+	</div>
+</div>
+</body>
+</html>
